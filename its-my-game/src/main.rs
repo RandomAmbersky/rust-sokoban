@@ -2,40 +2,22 @@
 // Rust sokoban
 // main.rs
 
-
 use ggez::{conf, event, Context, GameResult};
-use hecs::{Entity, World};
+use hecs::World;
 
 use std::path;
 
-// ANCHOR: components
-#[allow(dead_code)]
-pub struct Position {
-    x: u8,
-    y: u8,
-    z: u8,
-}
-
-#[allow(dead_code)]
-pub struct Renderable {
-    path: String,
-}
-
-pub struct Wall {}
-
-pub struct Player {}
-
-pub struct Box {}
-
-pub struct BoxSpot {}
-
-// ANCHOR_END: components
+mod components;
+mod constants;
+mod entities;
+mod events;
+mod map;
+mod systems;
 
 // ANCHOR: game
 // This struct will hold all our game state
 // For now there is nothing to be held, but we'll add
 // things shortly.
-#[allow(dead_code)]
 struct Game {
     world: World,
 }
@@ -43,69 +25,46 @@ struct Game {
 
 // ANCHOR: handler
 impl event::EventHandler<ggez::GameError> for Game {
-    fn update(&mut self, _context: &mut Context) -> GameResult {
+    fn update(&mut self, context: &mut Context) -> GameResult {
+        // Run input system
+        {
+            systems::input::run_input(&self.world, context);
+        }
+
+        // Run gameplay state
+        {
+            systems::gameplay::run_gameplay_state(&self.world);
+        }
+
+        // Run events processing
+        {
+            systems::events::run_process_events(&mut self.world, context);
+        }
+
+        // Get and update time resource
+        {
+            let mut query = self.world.query::<&mut crate::components::Time>();
+            let time = query.iter().next().unwrap().1;
+            time.delta += context.time.delta();
+        }
+
         Ok(())
     }
 
-    fn draw(&mut self, _context: &mut Context) -> GameResult {
+    fn draw(&mut self, context: &mut Context) -> GameResult {
+        // Render game entities
+        {
+            systems::rendering::run_rendering(&self.world, context);
+        }
+
         Ok(())
     }
 }
 // ANCHOR_END: handler
 
-// ANCHOR: entities
-pub fn create_wall(world: &mut World, position: Position) -> Entity {
-    world.spawn((
-        Position { z: 10, ..position },
-        Renderable {
-            path: "/images/wall.png".to_string(),
-        },
-        Wall {},
-    ))
-}
-pub fn create_floor(world: &mut World, position: Position) -> Entity {
-    world.spawn((
-        Position { z: 5, ..position },
-        Renderable {
-            path: "/images/floor.png".to_string(),
-        },
-    ))
-}
-
-pub fn create_box(world: &mut World, position: Position) -> Entity {
-    world.spawn((
-        Position { z: 10, ..position },
-        Renderable {
-            path: "/images/box.png".to_string(),
-        },
-        Box {},
-    ))
-}
-
-pub fn create_box_spot(world: &mut World, position: Position) -> Entity {
-    world.spawn((
-        Position { z: 9, ..position },
-        Renderable {
-            path: "/images/box_spot.png".to_string(),
-        },
-        BoxSpot {},
-    ))
-}
-
-pub fn create_player(world: &mut World, position: Position) -> Entity {
-    world.spawn((
-        Position { z: 10, ..position },
-        Renderable {
-            path: "/images/player.png".to_string(),
-        },
-        Player {},
-    ))
-}
-// ANCHOR_END: entities
-
 // ANCHOR: main
 pub fn main() -> GameResult {
-    let world = World::new();
+    let mut world = World::new();
 
     // Create a game context and event loop
     let context_builder = ggez::ContextBuilder::new("rust_sokoban", "sokoban")
@@ -113,7 +72,14 @@ pub fn main() -> GameResult {
         .window_mode(conf::WindowMode::default().dimensions(800.0, 600.0))
         .add_resource_path(path::PathBuf::from("./resources"));
 
-    let (context, event_loop) = context_builder.build()?;
+    let (mut context, event_loop) = context_builder.build()?;
+
+    entities::create_gameplay(&mut world);
+    entities::create_time(&mut world);
+    entities::create_event_queue(&mut world);
+    entities::create_audio_store(&mut world);
+
+    map::initialize_level(&mut world, &mut context);
 
     // Create the game state
     let game = Game { world };
