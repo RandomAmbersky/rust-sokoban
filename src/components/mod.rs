@@ -1,4 +1,5 @@
 mod components;
+mod postition;
 
 pub use components::AudioStore;
 pub use components::BoxColour;
@@ -10,7 +11,7 @@ pub use components::GameplayState;
 pub use components::Immovable;
 pub use components::Movable;
 pub use components::Player;
-pub use components::Position;
+pub use postition::Position;
 pub use components::Renderable;
 pub use components::RenderableKind;
 pub use components::Time;

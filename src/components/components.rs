@@ -8,12 +8,7 @@ use std::time::Duration;
 
 use crate::events::Event;
 
-#[derive(Clone, Copy, Eq, Hash, PartialEq)]
-pub struct Position {
-    pub x: u8,
-    pub y: u8,
-    pub z: u8,
-}
+
 
 pub struct Renderable {
     paths: Vec<String>,
