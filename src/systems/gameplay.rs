@@ -5,8 +5,8 @@ use std::collections::HashMap;
 
 pub fn run_gameplay_state(world: &World) {
     // get all boxes indexed by position
-    let mut query = world.query::<(&Position, &Box)>();
-    let boxes_by_position: HashMap<(u8, u8), &Box> = query
+    let mut query = world.query::<(&Position, &BoxContainer)>();
+    let boxes_by_position: HashMap<(u8, u8), &BoxContainer> = query
         .iter()
         .map(|(_, t)| ((t.0.x, t.0.y), t.1))
         .collect::<HashMap<_, _>>();

@@ -24,7 +24,7 @@ pub fn create_box(world: &mut World, position: Position, colour: BoxColour) -> E
             &format!("/images/box_{}_1.png", colour),
             &format!("/images/box_{}_2.png", colour),
         ]),
-        Box { colour },
+        BoxContainer { colour },
         Movable {},
     ))
 }

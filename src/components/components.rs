@@ -73,7 +73,7 @@ impl Display for BoxColour {
     }
 }
 
-pub struct Box {
+pub struct BoxContainer {
     pub colour: BoxColour,
 }
 

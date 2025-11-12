@@ -42,7 +42,7 @@ pub fn run_process_events(world: &mut World, context: &mut Context) {
             Event::EntityMoved(EntityMoved { entity }) => {
                 // An entity was just moved, check if it was a box and fire
                 // more events if it's been moved on a spot.
-                if let Ok(the_box) = world.get::<&Box>(entity) {
+                if let Ok(the_box) = world.get::<&BoxContainer>(entity) {
                     if let Ok(box_position) = world.get::<&Position>(entity) {
                         // Check if there is a spot on this position, and if there
                         // is if it's the correct or incorrect type
