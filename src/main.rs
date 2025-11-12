@@ -14,7 +14,6 @@ mod events;
 mod map;
 mod systems;
 
-// ANCHOR: game
 // This struct will hold all our game state
 // For now there is nothing to be held, but we'll add
 // things shortly.
