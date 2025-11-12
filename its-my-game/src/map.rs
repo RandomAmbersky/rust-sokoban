@@ -1,7 +1,7 @@
 use crate::components::{BoxColour, Position};
 use crate::entities::*;
-use ggez::audio::Source;
 use ggez::Context;
+use ggez::audio::Source;
 use hecs::World;
 
 pub fn initialize_level(world: &mut World, context: &mut Context) {
@@ -9,7 +9,7 @@ pub fn initialize_level(world: &mut World, context: &mut Context) {
     N N W W W W W W
     W W W . . . . W
     W . . . BB . . W
-    W . . RB . . . W 
+    W . . RB . . . W
     W . P . . . . W
     W . . . . RS . W
     W . . BS . . . W

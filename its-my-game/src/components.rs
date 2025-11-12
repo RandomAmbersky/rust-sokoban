@@ -1,6 +1,6 @@
+use ggez::Context;
 use ggez::audio;
 use ggez::audio::SoundSource;
-use ggez::Context;
 use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Display;
@@ -91,7 +91,6 @@ pub enum GameplayState {
     Playing,
     Won,
 }
-
 
 impl Display for GameplayState {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
